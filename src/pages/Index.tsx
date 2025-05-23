@@ -347,56 +347,51 @@ const PortfolioWebsite = () => {
       [name]: value
     }));
   };
+// telegram
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      // Send data to Telegram
-      const response = await fetch('https://api.telegram.org/bot5368920336:AAF0ZUS1J61z2YsH_eDbVpDAWKlX0vS2hjs/sendMessage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: '926927417',
-          parse_mode: 'HTML',
-          text: `
-<b>New Contact Form Submission</b>
+  try {
+    // Send data to your custom FastAPI endpoint on Render
+    const response = await fetch('https://silenttrack-contact-api.onrender.com/send-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+      }),
+    });
 
-<b>Name:</b> ${formData.name}
-<b>Email:</b> ${formData.email}
-<b>Subject:</b> ${formData.subject}
-<b>Message:</b> ${formData.message}
-          `
-        }),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Message sent successfully!",
-          description: "We'll get back to you soon.",
-        });
-        
-        // Reset form
-        setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: ''
-        });
-      } else {
-        throw new Error('Failed to send message');
-      }
-    } catch (error) {
+    if (response.ok) {
       toast({
-        title: "Error sending message",
-        description: "Please try again later or contact us directly.",
-        variant: "destructive",
+        title: "Message sent successfully!",
+        description: "We'll get back to you soon.",
       });
-      console.error('Error sending form data:', error);
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } else {
+      throw new Error('Failed to send message');
     }
-  };
+  } catch (error) {
+    toast({
+      title: "Error sending message",
+      description: "Please try again later or contact us directly.",
+      variant: "destructive",
+    });
+    console.error('Error sending form data:', error);
+  }
+};
+
 
   const skills = [
     'Penetration Testing',
