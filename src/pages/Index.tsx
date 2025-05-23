@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { Mail, Phone, MapPin, Download, ExternalLink, Shield, Search, FileText,
 import { Switch } from '@/components/ui/switch';
 import { Toggle } from '@/components/ui/toggle';
 import { useTheme } from '@/hooks/useTheme';
+import { useToast } from '@/components/ui/use-toast';
 
 type Language = 'en' | 'ar';
 
@@ -303,6 +305,15 @@ const PortfolioWebsite = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
 
   const t = content[language];
   const isRTL = language === 'ar';
@@ -329,6 +340,64 @@ const PortfolioWebsite = () => {
     setIsMenuOpen(false);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Send data to Telegram
+      const response = await fetch('https://api.telegram.org/bot5368920336:AAF0ZUS1J61z2YsH_eDbVpDAWKlX0vS2hjs/sendMessage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: '926927417',
+          parse_mode: 'HTML',
+          text: `
+<b>New Contact Form Submission</b>
+
+<b>Name:</b> ${formData.name}
+<b>Email:</b> ${formData.email}
+<b>Subject:</b> ${formData.subject}
+<b>Message:</b> ${formData.message}
+          `
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Message sent successfully!",
+          description: "We'll get back to you soon.",
+        });
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      toast({
+        title: "Error sending message",
+        description: "Please try again later or contact us directly.",
+        variant: "destructive",
+      });
+      console.error('Error sending form data:', error);
+    }
+  };
+
   const skills = [
     'Penetration Testing',
     'Vulnerability Assessment',
@@ -346,7 +415,7 @@ const PortfolioWebsite = () => {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <Shield className="h-8 w-8 text-cyber-blue" />
-              <span className="text-xl font-bold cyber-text-gradient">AWSI Security</span>
+              <span className="text-xl font-bold cyber-text-gradient">SilentTrack</span>
             </div>
 
             {/* Desktop Navigation */}
@@ -615,12 +684,16 @@ const PortfolioWebsite = () => {
               {/* Contact Form */}
               <Card className="glass-effect hover-glow">
                 <CardContent className="p-6">
-                  <form className="space-y-6">
+                  <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium mb-2">{t.contact.form.name}</label>
                         <input 
                           type="text" 
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          required
                           className="w-full px-3 py-2 bg-secondary border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue"
                         />
                       </div>
@@ -628,6 +701,10 @@ const PortfolioWebsite = () => {
                         <label className="block text-sm font-medium mb-2">{t.contact.form.email}</label>
                         <input 
                           type="email" 
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
                           className="w-full px-3 py-2 bg-secondary border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue"
                         />
                       </div>
@@ -636,6 +713,10 @@ const PortfolioWebsite = () => {
                       <label className="block text-sm font-medium mb-2">{t.contact.form.subject}</label>
                       <input 
                         type="text" 
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
+                        required
                         className="w-full px-3 py-2 bg-secondary border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue"
                       />
                     </div>
@@ -643,6 +724,10 @@ const PortfolioWebsite = () => {
                       <label className="block text-sm font-medium mb-2">{t.contact.form.message}</label>
                       <textarea 
                         rows={5}
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        required
                         className="w-full px-3 py-2 bg-secondary border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue resize-none"
                       ></textarea>
                     </div>
@@ -662,7 +747,7 @@ const PortfolioWebsite = () => {
                       <Mail className="h-5 w-5 text-cyber-blue mr-3" />
                       <div>
                         <h3 className="font-medium">{t.contact.info.email}</h3>
-                        <p className="text-muted-foreground">ali@awsisecurity.com</p>
+                        <p className="text-muted-foreground">ali@silenttrack.com</p>
                       </div>
                     </div>
                     <Separator className="my-4" />
@@ -715,7 +800,7 @@ const PortfolioWebsite = () => {
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Shield className="h-6 w-6 text-cyber-blue mr-2" />
-              <span className="text-lg font-semibold cyber-text-gradient">AWSI Security</span>
+              <span className="text-lg font-semibold cyber-text-gradient">SilentTrack</span>
             </div>
             <p className="text-muted-foreground">
               © 2024 Ali Bahaa Alawsi. All rights reserved. | Cybersecurity Expert & Researcher
