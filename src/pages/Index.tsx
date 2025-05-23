@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +10,6 @@ import { Switch } from '@/components/ui/switch';
 import { Toggle } from '@/components/ui/toggle';
 import { useTheme } from '@/hooks/useTheme';
 import { useToast } from '@/components/ui/use-toast';
-import AudioPlayer from '@/components/AudioPlayer';
 
 type Language = 'en' | 'ar';
 
@@ -535,23 +535,9 @@ const PortfolioWebsite = () => {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <div className="glass-effect p-6 rounded-lg hover-glow">
-                  <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
-                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-cyber-blue/30">
-                      <img 
-                        src="https://avatars.githubusercontent.com/u/87736155" 
-                        alt="Ali Bahaa Alawsi" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <p className="text-lg leading-relaxed">{t.about.biography}</p>
-                  </div>
+                  <p className="text-lg leading-relaxed mb-6">{t.about.biography}</p>
                   
-                  <div className="mb-6">
-                    <h4 className="text-lg font-medium mb-2">Hear from me:</h4>
-                    <AudioPlayer audioSrc="/about-voice-message.mp3" />
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-4 mt-6">
+                  <div className="flex flex-wrap gap-4 mb-6">
                     <Button asChild variant="outline" className="hover-glow">
                       <a href="/cv.pdf" target="_blank" rel="noopener noreferrer">
                         <Download className="mr-2 h-4 w-4" />
