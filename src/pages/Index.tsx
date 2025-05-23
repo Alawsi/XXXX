@@ -1,10 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Mail, Phone, MapPin, Download, ExternalLink, Shield, Search, FileText, Users, Award, Github, Instagram, Globe, Menu, X, ChevronDown } from 'lucide-react';
+import { Mail, Phone, MapPin, Download, ExternalLink, Shield, Search, FileText, 
+         Users, Award, Github, Instagram, Globe, Menu, X, ChevronDown, Sun, Moon } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Toggle } from '@/components/ui/toggle';
+import { useTheme } from '@/hooks/useTheme';
 
 type Language = 'en' | 'ar';
 
@@ -299,6 +302,7 @@ const PortfolioWebsite = () => {
   const [language, setLanguage] = useState<Language>('en');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const { theme, setTheme } = useTheme();
 
   const t = content[language];
   const isRTL = language === 'ar';
@@ -310,6 +314,10 @@ const PortfolioWebsite = () => {
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'en' ? 'ar' : 'en');
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   const scrollToSection = (sectionId: string) => {
@@ -354,15 +362,25 @@ const PortfolioWebsite = () => {
                   {value}
                 </button>
               ))}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={toggleLanguage}
-                className="hover-glow"
-              >
-                <Globe className="h-4 w-4 mr-2" />
-                {language === 'en' ? 'العربية' : 'English'}
-              </Button>
+              <div className="flex items-center space-x-3">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={toggleLanguage}
+                  className="hover-glow"
+                >
+                  <Globe className="h-4 w-4 mr-2" />
+                  {language === 'en' ? 'العربية' : 'English'}
+                </Button>
+                <Toggle
+                  aria-label="Toggle theme"
+                  pressed={theme === 'dark'}
+                  onPressedChange={toggleTheme}
+                  className="hover-glow"
+                >
+                  {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                </Toggle>
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
@@ -370,6 +388,13 @@ const PortfolioWebsite = () => {
               <Button variant="outline" size="sm" onClick={toggleLanguage}>
                 <Globe className="h-4 w-4" />
               </Button>
+              <Toggle 
+                aria-label="Toggle theme"
+                pressed={theme === 'dark'} 
+                onPressedChange={toggleTheme}
+              >
+                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Toggle>
               <Button
                 variant="ghost"
                 size="sm"
