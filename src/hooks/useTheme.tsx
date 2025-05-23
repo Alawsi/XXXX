@@ -13,8 +13,9 @@ export function useTheme() {
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
-      // Default to light mode
-      setTheme('light');
+      // Check if user prefers dark mode
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
     }
   }, []);
 
@@ -22,7 +23,9 @@ export function useTheme() {
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
+      document.documentElement.classList.add('light');
       document.documentElement.classList.remove('dark');
     }
     
